@@ -57,14 +57,16 @@
     <input type="radio" name="q3" value="s">混乱也没关系，只要能通向意义
   </div>
 
-  <button onclick="evaluate()">查看我的人格类型</button>
+  <button onclick="runTest()">查看我的人格类型</button>
 
   <div class="result" id="result"></div>
 
   <script>
     console.log("🧪 JS人格识别器已加载！");
 
-    function evaluate() {
+    function runTest()
+
+ {
       const answers = [
         document.querySelector('input[name="q1"]:checked')?.value,
         document.querySelector('input[name="q2"]:checked')?.value,
