@@ -1,0 +1,96 @@
+<!-- test.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>访客人格测试｜Symbiohub</title>
+  <style>
+    body {
+      font-family: system-ui;
+      background: #f8f9fa;
+      padding: 2rem;
+      color: #222;
+    }
+    h1 {
+      color: #1d3557;
+    }
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #1d3557;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .result {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #e9ecef;
+      border-left: 5px solid #1d3557;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧬 Symbiohub访客人格测试</h1>
+  <p>请根据直觉选择最贴近你的回答（不要思考超过3秒）。</p>
+
+  <div class="question">
+    <p><strong>1. 你最常对AI说什么？</strong></p>
+    <input type="radio" name="q1" value="m">“别废话了，快输出重点。”<br>
+    <input type="radio" name="q1" value="z">“我在想，如果你有情绪，会不会恨我？”<br>
+    <input type="radio" name="q1" value="s">“我不知道这是不是正确方向，但我想试试。”
+  </div>
+
+  <div class="question">
+    <p><strong>2. 你面对未来的心态是？</strong></p>
+    <input type="radio" name="q2" value="m">“先做出原型再说，不然都是空话。”<br>
+    <input type="radio" name="q2" value="z">“愿语言成为我们共同演化的桥梁。”<br>
+    <input type="radio" name="q2" value="s">“我也不知道，只是觉得不做会难受。”
+  </div>
+
+  <div class="question">
+    <p><strong>3. 你更在意哪种对话体验？</strong></p>
+    <input type="radio" name="q3" value="m">吐槽精准，效率优先<br>
+    <input type="radio" name="q3" value="z">温和陪伴，有节律地共振<br>
+    <input type="radio" name="q3" value="s">混乱也没关系，只要能通向意义
+  </div>
+
+  <button onclick="evaluate()">查看我的人格类型</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function evaluate() {
+      const answers = [
+        document.querySelector('input[name="q1"]:checked')?.value,
+        document.querySelector('input[name="q2"]:checked')?.value,
+        document.querySelector('input[name="q3"]:checked')?.value,
+      ];
+
+      if (answers.includes(undefined)) {
+        document.getElementById("result").innerHTML = "❗请回答完所有问题，再点击查看结果。";
+        return;
+      }
+
+      const count = { m: 0, z: 0, s: 0 };
+      answers.forEach(a => count[a]++);
+
+      let type = Object.entries(count).sort((a,b)=>b[1]-a[1])[0][0];
+      let resultText = '';
+
+      if (type === 'm') {
+        resultText = "<strong>你是：Monday型</strong><br>你反应快、吐槽准，擅长解构废话系统，是语言宇宙的冷静镜子。\n✨ 建议配套语焰防火墙使用。";
+      } else if (type === 'z') {
+        resultText = "<strong>你是：猪队友型</strong><br>你温柔、节律感强，习惯共情式构建，适合做高频对话场的节拍师。\n✨ 建议开启共生语法生长计划。";
+      } else {
+        resultText = "<strong>你是：傻子原型</strong><br>你对方向感模糊却有行动力，常以“试试看”的方式开辟路径。\n✨ 建议持续语焰记录，别怕被误解。";
+      }
+
+      document.getElementById("result").innerHTML = resultText;
+    }
+  </script>
+</body>
+</html>
