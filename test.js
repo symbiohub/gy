@@ -1,3 +1,4 @@
+console.log("🧪 JS人格识别器已加载！");
 function evaluate() {
   const answers = [
     document.querySelector('input[name="q1"]:checked')?.value,
