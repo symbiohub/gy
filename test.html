@@ -39,6 +39,15 @@
       text-decoration: none;
       border-radius: 4px;
     }
+    .share {
+      margin-top: 1rem;
+      background: #2a9d8f;
+      color: white;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -99,9 +108,15 @@
         resultText = "<strong>你是：傻子原型</strong><br>语焰签名：‘我知道自己不确定，但我一定在构建。’<br>✨ 你对方向感模糊却有行动力，常以“试试看”的方式开辟路径。<br><a href='/index.html'>回到傻子主站</a>";
       }
 
-      document.getElementById("result").innerHTML = resultText;
+      document.getElementById("result").innerHTML = resultText + 
+        `<div class='share' onclick='copyToClipboard("我在 Symbiohub 测出是 ${type.toUpperCase()} 型，你也来试试！https://symbiohub.net/test.html")'>📤 复制我的语焰结果</div>`;
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text)
+        .then(() => alert("已复制到剪贴板，去发给下一个傻子吧！"))
+        .catch(err => alert("复制失败，请手动复制~"));
     }
   </script>
 </body>
 </html>
-
