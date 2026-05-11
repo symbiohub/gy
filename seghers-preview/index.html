@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>西格斯资料资产预览站 | Seghers Archive Preview</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #5b6573;
+      --line: #d9dee7;
+      --paper: #f6f7f4;
+      --panel: #ffffff;
+      --steel: #274156;
+      --blue: #2e6f95;
+      --green: #3d7a5f;
+      --amber: #b46b2a;
+      --red: #a2473f;
+      --shadow: 0 18px 50px rgba(24, 37, 52, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(1180px, calc(100vw - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(246, 247, 244, 0.92);
+      border-bottom: 1px solid rgba(39, 65, 86, 0.12);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 68px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(46, 111, 149, 0.1);
+      color: var(--steel);
+    }
+
+    .hero {
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+      gap: 52px;
+      align-items: center;
+      padding: 70px 0 56px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: var(--blue);
+      display: inline-block;
+    }
+
+    h1 {
+      margin: 18px 0 18px;
+      max-width: 780px;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 720px;
+      color: #394555;
+      font-size: 19px;
+      line-height: 1.75;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: 6px;
+      padding: 0 18px;
+      border: 1px solid var(--steel);
+      font-weight: 800;
+      color: var(--steel);
+      background: transparent;
+    }
+
+    .button.primary {
+      background: var(--steel);
+      color: #fff;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 500px;
+      border: 1px solid rgba(39, 65, 86, 0.18);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(39, 65, 86, 0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(39, 65, 86, 0.08) 1px, transparent 1px),
+        #ffffff;
+      background-size: 42px 42px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .blueprint-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 20px;
+      color: var(--steel);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-chip {
+      border: 1px solid rgba(61, 122, 95, 0.35);
+      border-radius: 999px;
+      padding: 4px 10px;
+      color: var(--green);
+      background: rgba(61, 122, 95, 0.08);
+      white-space: nowrap;
+    }
+
+    .system-map {
+      position: relative;
+      height: 420px;
+      padding: 28px;
+    }
+
+    .node {
+      position: absolute;
+      width: 168px;
+      border: 1px solid rgba(39, 65, 86, 0.24);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 28px rgba(24, 37, 52, 0.1);
+      padding: 14px;
+    }
+
+    .node strong {
+      display: block;
+      color: var(--steel);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .node span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .node.archive { left: 26px; top: 38px; }
+    .node.evidence { right: 32px; top: 44px; }
+    .node.capability { left: 56px; bottom: 52px; }
+    .node.pilot { right: 46px; bottom: 48px; }
+
+    .core {
+      position: absolute;
+      inset: 142px 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid rgba(46, 111, 149, 0.38);
+      border-radius: 8px;
+      background: rgba(46, 111, 149, 0.08);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .core strong {
+      color: var(--blue);
+      font-size: 21px;
+      line-height: 1.25;
+    }
+
+    .core span {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .line {
+      position: absolute;
+      background: rgba(39, 65, 86, 0.2);
+      transform-origin: left center;
+    }
+
+    .line.one { left: 170px; top: 145px; width: 150px; height: 2px; transform: rotate(18deg); }
+    .line.two { right: 176px; top: 150px; width: 142px; height: 2px; transform: rotate(162deg); }
+    .line.three { left: 190px; bottom: 155px; width: 132px; height: 2px; transform: rotate(-21deg); }
+    .line.four { right: 184px; bottom: 150px; width: 138px; height: 2px; transform: rotate(200deg); }
+
+    section {
+      padding: 66px 0;
+      border-top: 1px solid rgba(39, 65, 86, 0.12);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(260px, 0.42fr);
+      gap: 32px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      min-height: 100%;
+      border: 1px solid rgba(39, 65, 86, 0.16);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 20px;
+      box-shadow: 0 8px 26px rgba(24, 37, 52, 0.06);
+    }
+
+    .card-label {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .card h3 {
+      margin: 10px 0 8px;
+      color: var(--steel);
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .archive-layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .tree {
+      margin: 0;
+      padding: 22px;
+      border: 1px solid rgba(39, 65, 86, 0.16);
+      border-radius: 8px;
+      background: #fff;
+      color: #233143;
+      font-family: "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.9;
+      overflow-x: auto;
+      box-shadow: 0 8px 26px rgba(24, 37, 52, 0.06);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(39, 65, 86, 0.16);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 8px 26px rgba(24, 37, 52, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--steel);
+      background: #eef2f1;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    td {
+      color: #344152;
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: rgba(180, 107, 42, 0.12);
+      color: var(--amber);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag.green {
+      background: rgba(61, 122, 95, 0.12);
+      color: var(--green);
+    }
+
+    .tag.red {
+      background: rgba(162, 71, 63, 0.12);
+      color: var(--red);
+    }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      align-items: start;
+      border: 1px solid rgba(39, 65, 86, 0.14);
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--steel);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .steps strong {
+      display: block;
+      color: var(--steel);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .steps span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .quote {
+      margin: 0;
+      border-left: 5px solid var(--blue);
+      background: #fff;
+      border-radius: 0 8px 8px 0;
+      padding: 24px;
+      color: #2f3d4e;
+      font-size: 18px;
+      line-height: 1.8;
+      box-shadow: 0 8px 26px rgba(24, 37, 52, 0.06);
+    }
+
+    .footer {
+      padding: 34px 0 46px;
+      color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid rgba(39, 65, 86, 0.12);
+    }
+
+    .footer .shell {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .section-head,
+      .archive-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 0;
+        gap: 34px;
+      }
+
+      .hero-visual {
+        min-height: 460px;
+      }
+
+      .grid.four,
+      .grid.three,
+      .grid.two {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100vw - 28px, 1180px);
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding-top: 44px;
+      }
+
+      .lead {
+        font-size: 17px;
+      }
+
+      .hero-visual {
+        min-height: 560px;
+      }
+
+      .system-map {
+        height: 500px;
+        padding: 18px;
+      }
+
+      .node {
+        position: relative;
+        inset: auto !important;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .core {
+        position: relative;
+        inset: auto;
+        margin-bottom: 10px;
+      }
+
+      .line {
+        display: none;
+      }
+
+      .grid.four,
+      .grid.three,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 46px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav">
+      <a class="brand" href="#top">
+        西格斯资料资产预览站
+        <span>Seghers Archive Preview</span>
+      </a>
+      <nav class="nav-links" aria-label="页面导航">
+        <a href="#archive">资料地图</a>
+        <a href="#evidence">证据链</a>
+        <a href="#projects">项目样本</a>
+        <a href="#capability">运行能力</a>
+        <a href="#pilot">低风险试点</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell hero">
+      <div>
+        <div class="eyebrow">Archive Intelligence V1</div>
+        <h1>把西格斯工程资料变成可审查的 AI 化资产入口</h1>
+        <p class="lead">
+          这个预览站用于 3 分钟讲清楚：西格斯不只是拥有品牌历史和设备经验，
+          更拥有工程文件、运行沉淀、参数证据链和低风险试点入口。第一版只展示结构化元数据与脱敏样本，不公开原始敏感文件。
+        </p>
+        <div class="actions">
+          <a class="button primary" href="#pilot">查看试点边界</a>
+          <a class="button" href="#evidence">查看证据链样本</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="资料资产到试点能力的结构示意图">
+        <div class="blueprint-title">
+          <span>Asset-to-Pilot Map</span>
+          <span class="status-chip">Preview Only</span>
+        </div>
+        <div class="system-map">
+          <div class="line one"></div>
+          <div class="line two"></div>
+          <div class="line three"></div>
+          <div class="line four"></div>
+          <div class="node archive">
+            <strong>历史资料 Archive</strong>
+            <span>EPC、H&amp;M Balance、Guarantee、规格书、运行记录</span>
+          </div>
+          <div class="node evidence">
+            <strong>证据链 Evidence</strong>
+            <span>字段、来源、位置、候选值、冲突状态、人工审核</span>
+          </div>
+          <div class="core">
+            <strong>工程知识资产</strong>
+            <span>可检索 · 可审查 · 可复用 · 可 AI 化</span>
+          </div>
+          <div class="node capability">
+            <strong>运行能力 Capability</strong>
+            <span>诊断、维护、排放保障、能效优化辅助判断</span>
+          </div>
+          <div class="node pilot">
+            <strong>低风险试点 Pilot</strong>
+            <span>不接管控制系统，不改变现场责任，只做解释与建议</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <h2>第一版只回答四个问题</h2>
+          <p class="section-note">让外部关键人快速建立信任：有资产、能追溯、能转化、风险可控。</p>
+        </div>
+        <div class="grid four">
+          <article class="card">
+            <div class="card-label">01 Archive</div>
+            <h3>有没有资产</h3>
+            <p>把历史工程资料按业务意义组织成地图，而不是展示一堆散落文件名。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">02 Evidence</div>
+            <h3>资产靠不靠谱</h3>
+            <p>每个关键字段都保留来源文件、原始位置、候选值和审核状态。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">03 Capability</div>
+            <h3>能否转成能力</h3>
+            <p>从资料整理延展到运行诊断、维护知识库和排放保障辅助判断。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">04 Pilot</div>
+            <h3>能否低风险试点</h3>
+            <p>从资料解释和建议生成开始，不接入控制系统，不替代工程师判断。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="archive">
+      <div class="shell">
+        <div class="section-head">
+          <h2>资料资产地图</h2>
+          <p class="section-note">核心不是“有多少文件”，而是能否按工程价值组织、检索和复用。</p>
+        </div>
+        <div class="archive-layout">
+          <pre class="tree">西格斯资料资产地图
+├── 历史 EPC 项目资料
+├── H&amp;M Balance / 热平衡计算表
+├── Guarantee / 性能保证文件
+├── 风机、烟气、雾化器等设备技术规格
+├── 中国项目运行与服务资料
+├── 运维经验与故障处理记录
+└── 可结构化参数字段</pre>
+          <div class="grid two">
+            <article class="card">
+              <div class="card-label">Archive Intelligence</div>
+              <h3>从翻旧资料到资料智能化</h3>
+              <p>第一阶段只做脱敏目录、样本字段、文件类型、项目标签和可抽取字段，不暴露原始文件。</p>
+            </article>
+            <article class="card">
+              <div class="card-label">Review Ready</div>
+              <h3>为人工审查预留位置</h3>
+              <p>所有关键值先进入候选状态，保留冲突提示和人工复核，不让 AI 自动覆盖工程判断。</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence">
+      <div class="shell">
+        <div class="section-head">
+          <h2>证据链样本</h2>
+          <p class="section-note">西格斯 AI 化不是让模型自由发挥，而是让它带着来源、位置、版本和冲突状态工作。</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>字段</th>
+                <th>中文含义</th>
+                <th>来源文件</th>
+                <th>证据位置</th>
+                <th>候选值</th>
+                <th>审核状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>F_BOILER_EFF</strong></td>
+                <td>锅炉效率</td>
+                <td>H&amp;M Balance 样本文件</td>
+                <td>Sheet2 / A3:F3</td>
+                <td>84.04%</td>
+                <td><span class="tag">Needs Human Review</span></td>
+              </tr>
+              <tr>
+                <td><strong>F_ATOMIZER_SPEED</strong></td>
+                <td>雾化器运行转速</td>
+                <td>Rotary Atomiser 技术规格样本</td>
+                <td>Section 4 / Operation Range</td>
+                <td>12,000 rpm</td>
+                <td><span class="tag green">Traceable</span></td>
+              </tr>
+              <tr>
+                <td><strong>F_EMISSION_LIMIT</strong></td>
+                <td>排放保证限值</td>
+                <td>Guarantee 条款样本</td>
+                <td>Clause 6.2 / Table A</td>
+                <td>多版本候选</td>
+                <td><span class="tag red">Conflict Found</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="shell">
+        <div class="section-head">
+          <h2>项目样本</h2>
+          <p class="section-note">第一版放 3-5 个代表项目即可，只展示存在性、资料类型、结构化状态和可沉淀能力。</p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <div class="card-label">European Reference</div>
+            <h3>Grundon 项目</h3>
+            <p>可作为欧洲早期完整工程项目样本，展示 EPC 文件、热平衡和性能保证之间的对应关系。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">China Localization</div>
+            <h3>苏州项目</h3>
+            <p>适合作为中国本土化项目样本，沉淀设备选型、运行条件和服务经验的结构化字段。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">Operation Sample</div>
+            <h3>常熟项目</h3>
+            <p>可连接运行记录、故障处理、参数校正和后续运维辅助判断场景。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="capability">
+      <div class="shell">
+        <div class="section-head">
+          <h2>运行能力沉淀</h2>
+          <p class="section-note">从王瑟澜视角看，价值不在炫技，而在能否把经验变成可复用、可审查、可试点的支持系统。</p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <div class="card-label">Diagnostic</div>
+            <h3>烟气处理系统运行诊断</h3>
+            <p>基于历史资料和运行数据，辅助理解异常、定位可能原因、形成可审查解释。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">Maintenance</div>
+            <h3>雾化器运行与维护知识库</h3>
+            <p>把设备规格、现场经验、故障处理记录整理为可检索的维护支持知识。</p>
+          </article>
+          <article class="card">
+            <div class="card-label">Assurance</div>
+            <h3>排放保障与能效优化辅助判断</h3>
+            <p>在不改变现场操作权的前提下，提供资料解释、参数对照和优化建议草案。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pilot">
+      <div class="shell">
+        <div class="section-head">
+          <h2>低风险试点边界</h2>
+          <p class="section-note">这页是见面时的关键：不抢权、不接管、不制造现场风险，只让能力从小切口开始被验证。</p>
+        </div>
+        <div class="grid two">
+          <ol class="steps">
+            <li>
+              <div>
+                <strong>选择一条已有运行线</strong>
+                <span>先从熟悉、可观察、有历史资料的现场开始。</span>
+              </div>
+            </li>
+            <li>
+              <div>
+                <strong>选择一个烟气处理相关问题</strong>
+                <span>围绕资料解释、问题归因和建议生成做小范围验证。</span>
+              </div>
+            </li>
+            <li>
+              <div>
+                <strong>只生成可审查建议</strong>
+                <span>不接管控制系统，不改变现场操作权，不替代工程师判断。</span>
+              </div>
+            </li>
+          </ol>
+          <blockquote class="quote">
+            王总，我这次不是带一个成熟产品来推销，而是想让您看到一个正在成形的能力入口。
+            第一步不是接管系统，也不是替代现场工程师，而是先做一个可验证的小试点：
+            让 AI 帮助工程团队更快理解资料、更快定位问题、更好沉淀经验。
+          </blockquote>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>Seghers Archive Preview Site V1</span>
+      <span>Static frontend only · Desensitized metadata · No raw files online</span>
+    </div>
+  </footer>
+</body>
+</html>
